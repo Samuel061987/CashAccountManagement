@@ -9,9 +9,9 @@ When a transaction happens,
 
 
 Dependency Added	
-    spring-boot-starter-data-jpa - Used to connect database access and query generation
-    spring-boot-starter-web -Used to run the web application and provide necessary dependencies and configuration for RESTful webservices
-    H2 -Used as an in-memory database (stored in system's memory)
+   - spring-boot-starter-data-jpa - Used to connect database access and query generation
+   - spring-boot-starter-web -Used to run the web application and provide necessary dependencies and configuration for RESTful webservices
+   - H2 -Used as an in-memory database (stored in system's memory)
     springdoc-openapi-starter-webmvc-ui- Used for API documentation and swagger UI integration
     Lombok -Used for builder pattern ,constructors, automatic generation of getter and setter
     spring-boot-starter-validation - Used for validating the input by adding automatic validation and common annotation
