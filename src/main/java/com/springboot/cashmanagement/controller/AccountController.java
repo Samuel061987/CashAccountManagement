@@ -22,13 +22,14 @@ public class AccountController{
 
     @Operation(summary = "Create Account", description = "Retrieve a list of all cash accounts",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Successful operation"),
+                    @ApiResponse(responseCode = "201", description = "Account created successfully"),
                     @ApiResponse(responseCode = "500", description = "Internal server error") })
     @PostMapping("/create")
+
     public ResponseEntity<ApiResponseDTO> createAccount(@Valid @RequestBody AccountRequest account) {
         accountService.createAccount(account);
-        AccountResponse accountResponse = new AccountResponse("Account created successfully");
-        ApiResponseDTO response = new ApiResponseDTO(accountResponse);
+        MessageResponse messageResponse = new MessageResponse("Account created successfully");
+        ApiResponseDTO response = new ApiResponseDTO(messageResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @Operation(summary = "Get all accounts", description = "Retrieve a list of all cash accounts",
@@ -40,6 +41,10 @@ public class AccountController{
         List<Account> accounts = accountService.getAllAccounts();
         return ResponseEntity.ok(accounts);
     }
+    @Operation(summary = "Get account details based on accountId ", description = "Retrieve a account details based on account Id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error") })
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDTO> getAccountById(@PathVariable Long id) {
@@ -47,27 +52,35 @@ public class AccountController{
             com.springboot.cashmanagement.model.Account account = accountService.getAccountById(id);
             return ResponseEntity.ok(new ApiResponseDTO(account));
         }catch (RuntimeException e) {
-            AccountResponse accountResponse = new AccountResponse("No record found for the given ID");
-            ApiResponseDTO response = new ApiResponseDTO(accountResponse);
+            MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+            ApiResponseDTO response = new ApiResponseDTO(messageResponse);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
     }
+    @Operation(summary = "Process the transaction based on account Id", description = "Processing the amount transaction",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error") })
 
     @PostMapping("/{accountId}/transaction")
     public ResponseEntity<Object> processTransaction(@Valid @PathVariable Long accountId,@Valid @RequestParam double amount) {
        try {
            accountService.processTransaction(accountId, amount);
-           AccountResponse accountResponse = new AccountResponse("Transaction processed successfully");
-           ApiResponseDTO response = new ApiResponseDTO(accountResponse);
+           MessageResponse messageResponse = new MessageResponse("Transaction processed successfully");
+           ApiResponseDTO response = new ApiResponseDTO(messageResponse);
            return ResponseEntity.status(HttpStatus.OK).body(response);
        }
        catch (RuntimeException e) {
-           AccountResponse accountResponse = new AccountResponse("No record found for the given ID");
-           ApiResponseDTO response = new ApiResponseDTO(accountResponse);
+           MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+           ApiResponseDTO response = new ApiResponseDTO(messageResponse);
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
        }
     }
+    @Operation(summary = "Get the transaction history based on account Id", description = "Retrieve the transaction history based on account Id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error") })
 
     @GetMapping("/{accountId}/transaction-history")
     public  ResponseEntity<Object> getTransactionHistory(@PathVariable Long accountId) {
@@ -75,10 +88,21 @@ public class AccountController{
             return ResponseEntity.ok(accountService.getAccountWithTransactionHistory(accountId));
         }
         catch (RuntimeException e) {
-            AccountResponse accountResponse = new AccountResponse("No record found for the given ID");
-            ApiResponseDTO response = new ApiResponseDTO(accountResponse);
+            MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+            ApiResponseDTO response = new ApiResponseDTO(messageResponse);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
         }
+    }
+    @Operation(summary = "Delete the account based on account Id", description = "Delete the account",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Delete operation"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error") })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        MessageResponse messageResponse = new MessageResponse("Account deleted successfully");
+        ApiResponseDTO response = new ApiResponseDTO(messageResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

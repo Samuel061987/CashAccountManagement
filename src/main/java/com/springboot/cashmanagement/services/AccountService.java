@@ -22,6 +22,11 @@ public class AccountService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    /**
+     * Create new account
+     * @param account passing account name and threshold amount
+     */
+
     public void createAccount(AccountRequest account) {
         accountRepository.save(com.springboot.cashmanagement.model.Account.builder()
                 .name(account.getName())
@@ -29,6 +34,10 @@ public class AccountService {
                 .build());
     }
 
+    /**
+     * TO get the Account list
+     * @return Account
+     */
     public List<Account> getAllAccounts() {
 
         return accountRepository.findAll().stream()
@@ -49,6 +58,12 @@ public class AccountService {
     public com.springboot.cashmanagement.model.Account getAccountById(Long id) {
         return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
     }
+
+    /**
+     * Process the transaction
+     * @param accountId using I'd
+     * @param amount amount to process transaction
+     */
     @Transactional
     public void processTransaction(Long accountId, double amount) {
         com.springboot.cashmanagement.model.Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
@@ -77,6 +92,11 @@ public class AccountService {
        accountRepository.save(account);
     }
 
+    /**
+     * To get the transaction history based on accountId
+     * @param accountId using I'd
+     * @return transaction history response
+     */
     public TransactionHistoryResponse getAccountWithTransactionHistory(Long accountId) {
         com.springboot.cashmanagement.model.Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
         List<TransactionHistory> transactionHistory = account.getTransactions() != null ?
@@ -94,6 +114,11 @@ public class AccountService {
         return transactionHistoryResponse;
     }
 
+    /**
+     * To get the transaction list in array format
+     * @param transaction to get Transaction Id
+     * @return transaction history
+     */
     private TransactionHistory convertToTransactionDTO(Transaction transaction) {
         TransactionHistory transactionHistory = new TransactionHistory();
         transactionHistory.setTransactionId(transaction.getId());
@@ -101,5 +126,13 @@ public class AccountService {
         transactionHistory.setAmount(transaction.getAmount());
         transactionHistory.setCreationDate(transaction.getCreationDate());
         return transactionHistory;
+    }
+
+    /**
+     * Delete using account Id
+     * @param id use account I'd
+     */
+    public void deleteAccount(Long id) {
+        accountRepository.deleteById(id);
     }
 }
