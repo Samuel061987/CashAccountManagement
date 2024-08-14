@@ -2,7 +2,7 @@ package com.springboot.cashmanagement.services;
 
 import static org.mockito.Mockito.*;
 
-import com.springboot.cashmanagement.dto.AccountRequest;
+import com.springboot.cashmanagement.dto.AccountRequestDTO;
 import com.springboot.cashmanagement.model.Account;
 import com.springboot.cashmanagement.model.Transaction;
 import com.springboot.cashmanagement.repository.AccountRepository;
@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 
 @SpringBootTest
-public class AccountServiceTest {
+public class AccountDTOServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
@@ -66,7 +66,7 @@ public class AccountServiceTest {
 
     @Test
     public void testCreateAccount() {
-        AccountRequest account = new AccountRequest();
+        AccountRequestDTO account = new AccountRequestDTO();
         account.setName("LOKESH");
         account.setThresholdAmount(888.0);
 

@@ -30,7 +30,6 @@ public class Account {
     private double balance;
     @CreationTimestamp
     private LocalDateTime creationDate;
-
     @OneToMany(mappedBy = "account")
     @JsonManagedReference
     private List<Transaction> transactions;

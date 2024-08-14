@@ -1,4 +1,9 @@
 package com.springboot.cashmanagement.repository;
 
-public interface UserRepository {
+import com.springboot.cashmanagement.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
 }
+
