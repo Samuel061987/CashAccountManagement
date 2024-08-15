@@ -26,9 +26,9 @@ public class AccountController{
                     @ApiResponse(responseCode = "500", description = "Internal server error") })
     @PostMapping("/create")
 
-    public ResponseEntity<ApiResponseDTO> createAccount(@Valid @RequestBody AccountRequest account) {
+    public ResponseEntity<ApiResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO account) {
         accountService.createAccount(account);
-        MessageResponse messageResponse = new MessageResponse("Account created successfully");
+        MessageResponseDTO messageResponse = new MessageResponseDTO("Account created successfully");
         ApiResponseDTO response = new ApiResponseDTO(messageResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -37,8 +37,8 @@ public class AccountController{
             @ApiResponse(responseCode = "200", description = "Successful operation"),
                     @ApiResponse(responseCode = "500", description = "Internal server error") })
     @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        List<Account> accounts = accountService.getAllAccounts();
+    public ResponseEntity<List<AccountDTO>> getAllAccounts() {
+        List<AccountDTO> accounts = accountService.getAllAccounts();
         return ResponseEntity.ok(accounts);
     }
     @Operation(summary = "Get account details based on accountId ", description = "Retrieve a account details based on account Id",
@@ -52,7 +52,7 @@ public class AccountController{
             com.springboot.cashmanagement.model.Account account = accountService.getAccountById(id);
             return ResponseEntity.ok(new ApiResponseDTO(account));
         }catch (RuntimeException e) {
-            MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+            MessageResponseDTO messageResponse = new MessageResponseDTO("No record found for the given ID");
             ApiResponseDTO response = new ApiResponseDTO(messageResponse);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
@@ -67,12 +67,12 @@ public class AccountController{
     public ResponseEntity<Object> processTransaction(@Valid @PathVariable Long accountId,@Valid @RequestParam double amount) {
        try {
            accountService.processTransaction(accountId, amount);
-           MessageResponse messageResponse = new MessageResponse("Transaction processed successfully");
+           MessageResponseDTO messageResponse = new MessageResponseDTO("Transaction processed successfully");
            ApiResponseDTO response = new ApiResponseDTO(messageResponse);
            return ResponseEntity.status(HttpStatus.OK).body(response);
        }
        catch (RuntimeException e) {
-           MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+           MessageResponseDTO messageResponse = new MessageResponseDTO("No record found for the given ID");
            ApiResponseDTO response = new ApiResponseDTO(messageResponse);
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
        }
@@ -88,7 +88,7 @@ public class AccountController{
             return ResponseEntity.ok(accountService.getAccountWithTransactionHistory(accountId));
         }
         catch (RuntimeException e) {
-            MessageResponse messageResponse = new MessageResponse("No record found for the given ID");
+            MessageResponseDTO messageResponse = new MessageResponseDTO("No record found for the given ID");
             ApiResponseDTO response = new ApiResponseDTO(messageResponse);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
@@ -101,7 +101,7 @@ public class AccountController{
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDTO> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
-        MessageResponse messageResponse = new MessageResponse("Account deleted successfully");
+        MessageResponseDTO messageResponse = new MessageResponseDTO("Account deleted successfully");
         ApiResponseDTO response = new ApiResponseDTO(messageResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

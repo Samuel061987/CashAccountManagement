@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class AccountRequest {
+public class AccountRequestDTO {
     @NotBlank(message = "Name is mandatory")
     private String name;
     @NotNull(message = "ThresholdAmount is mandatory")

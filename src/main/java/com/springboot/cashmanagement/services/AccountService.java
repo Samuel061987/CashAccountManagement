@@ -1,9 +1,9 @@
 package com.springboot.cashmanagement.services;
 
-import com.springboot.cashmanagement.dto.Account;
-import com.springboot.cashmanagement.dto.AccountRequest;
-import com.springboot.cashmanagement.dto.TransactionHistory;
-import com.springboot.cashmanagement.dto.TransactionHistoryResponse;
+import com.springboot.cashmanagement.dto.AccountDTO;
+import com.springboot.cashmanagement.dto.AccountRequestDTO;
+import com.springboot.cashmanagement.dto.TransactionHistoryDTO;
+import com.springboot.cashmanagement.dto.TransactionHistoryResponseDTO;
 import com.springboot.cashmanagement.model.Transaction;
 import com.springboot.cashmanagement.repository.AccountRepository;
 import com.springboot.cashmanagement.repository.TransactionRepository;
@@ -27,7 +27,7 @@ public class AccountService {
      * @param account passing account name and threshold amount
      */
 
-    public void createAccount(AccountRequest account) {
+    public void createAccount(AccountRequestDTO account) {
         accountRepository.save(com.springboot.cashmanagement.model.Account.builder()
                 .name(account.getName())
                 .thresholdAmount(account.getThresholdAmount())
@@ -38,11 +38,11 @@ public class AccountService {
      * TO get the Account list
      * @return Account
      */
-    public List<Account> getAllAccounts() {
+    public List<AccountDTO> getAllAccounts() {
 
         return accountRepository.findAll().stream()
                 .map(account ->
-                    Account.builder()
+                    AccountDTO.builder()
                             .id(account.getId())
                             .name(account.getName())
                             .thresholdAmount(account.getThresholdAmount())
@@ -97,15 +97,15 @@ public class AccountService {
      * @param accountId using I'd
      * @return transaction history response
      */
-    public TransactionHistoryResponse getAccountWithTransactionHistory(Long accountId) {
+    public TransactionHistoryResponseDTO getAccountWithTransactionHistory(Long accountId) {
         com.springboot.cashmanagement.model.Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
-        List<TransactionHistory> transactionHistory = account.getTransactions() != null ?
+        List<TransactionHistoryDTO> transactionHistory = account.getTransactions() != null ?
                 account.getTransactions().stream()
                         .map(this::convertToTransactionDTO)
                         .collect(Collectors.toList()) :
                 new ArrayList<>();
 
-        TransactionHistoryResponse transactionHistoryResponse = new TransactionHistoryResponse();
+        TransactionHistoryResponseDTO transactionHistoryResponse = new TransactionHistoryResponseDTO();
         transactionHistoryResponse.setId(account.getId());
         transactionHistoryResponse.setName(account.getName());
         transactionHistoryResponse.setCurrentBalance(account.getBalance());
@@ -119,8 +119,8 @@ public class AccountService {
      * @param transaction to get Transaction Id
      * @return transaction history
      */
-    private TransactionHistory convertToTransactionDTO(Transaction transaction) {
-        TransactionHistory transactionHistory = new TransactionHistory();
+    private TransactionHistoryDTO convertToTransactionDTO(Transaction transaction) {
+        TransactionHistoryDTO transactionHistory = new TransactionHistoryDTO();
         transactionHistory.setTransactionId(transaction.getId());
         transactionHistory.setType(transaction.getType());
         transactionHistory.setAmount(transaction.getAmount());

@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionHistoryResponse {
+public class TransactionHistoryResponseDTO {
     @JsonProperty("id")
     Long id;
 
@@ -26,8 +26,6 @@ public class TransactionHistoryResponse {
     double thresholdAmount;
 
     @JsonProperty("transactionHistory")
-    List<TransactionHistory> transactionHistory;
+    List<TransactionHistoryDTO> transactionHistory;
 
 }
-
-

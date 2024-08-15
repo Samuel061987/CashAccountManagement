@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Account {
+public class AccountDTO {
     @JsonProperty("id")
     Long id;
 

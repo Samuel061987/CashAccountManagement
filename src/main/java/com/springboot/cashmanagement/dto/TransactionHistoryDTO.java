@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionHistory {
+public class TransactionHistoryDTO {
 
     @JsonProperty("transactionId")
     Long transactionId;
