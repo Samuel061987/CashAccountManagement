@@ -26,9 +26,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                       .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("**").permitAll()
+                       .requestMatchers("/h2-console/*").permitAll()
+                        .requestMatchers("/swagger-ui/*").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.disable())
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(http), jwtUtil()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(http), jwtUtil(), customUserDetailsService));
