@@ -1,5 +1,6 @@
 package com.springboot.cashmanagement.exceptions;
 
+import jakarta.persistence.NoResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,5 +26,13 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoResultException.class)
+    public ResponseEntity<Map<String, String>> handleNoResultExceptions(NoResultException ex) {
+        Map<String, String> errors = new HashMap<>();
+        String errorMessage = ex.getMessage();
+        errors.put("message", errorMessage);
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 }

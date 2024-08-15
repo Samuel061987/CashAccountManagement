@@ -26,6 +26,6 @@ public class TransactionHistoryResponseDTO {
     double thresholdAmount;
 
     @JsonProperty("transactionHistory")
-    List<TransactionHistoryDTO> transactionHistory;
+    List<TransactionHistoryDTO> transactionHistoryDTO;
 
 }

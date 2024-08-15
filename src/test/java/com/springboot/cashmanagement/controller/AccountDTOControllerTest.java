@@ -5,8 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.cashmanagement.dto.AccountRequest;
-import com.springboot.cashmanagement.dto.Account;
+import com.springboot.cashmanagement.dto.AccountRequestDTO;
+import com.springboot.cashmanagement.dto.AccountDTO;
 import com.springboot.cashmanagement.services.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @WebMvcTest(AccountController.class)
-public class AccountControllerTest {
+public class AccountDTOControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,10 +46,10 @@ public class AccountControllerTest {
     public void testGetAllAccounts() throws Exception {
 
 
-        List<Account> accounts = Arrays.asList(Account.builder().name("User1").id(1L).currentBalance(100.0).thresholdAmount(200.0).build()
-                , Account.builder().name("User2").id(2L).currentBalance(150.0).thresholdAmount(200.0).build());
+        List<AccountDTO> accounts = Arrays.asList(AccountDTO.builder().name("User1").id(1L).currentBalance(100.0).thresholdAmount(200.0).build()
+                , AccountDTO.builder().name("User2").id(2L).currentBalance(150.0).thresholdAmount(200.0).build());
 
-       when(accountService.getAllAccounts()).thenReturn(accounts);
+        when(accountService.getAllAccounts()).thenReturn(accounts);
 
         mockMvc.perform(get("/api/accounts"))
                 .andExpect(status().isOk())
@@ -61,7 +61,7 @@ public class AccountControllerTest {
 
     @Test
     public void testCreateAccount() throws Exception {
-        AccountRequest account = new AccountRequest();
+        AccountRequestDTO account = new AccountRequestDTO();
         account.setName("LOKESH");
         account.setThresholdAmount(888.0);
 
@@ -70,7 +70,7 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(account)))
                 .andExpect(status().isCreated());
 
-       verify(accountService, times(1))
-               .createAccount(any(AccountRequest.class));
+        verify(accountService, times(1))
+                .createAccount(any(AccountRequestDTO.class));
     }
 }

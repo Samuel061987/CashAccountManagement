@@ -5,6 +5,7 @@ import com.springboot.cashmanagement.dto.AccountRequestDTO;
 import com.springboot.cashmanagement.dto.TransactionHistoryDTO;
 import com.springboot.cashmanagement.dto.TransactionHistoryResponseDTO;
 import com.springboot.cashmanagement.model.Transaction;
+import com.springboot.cashmanagement.model.Account;
 import com.springboot.cashmanagement.repository.AccountRepository;
 import com.springboot.cashmanagement.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +29,7 @@ public class AccountService {
      */
 
     public void createAccount(AccountRequestDTO account) {
-        accountRepository.save(com.springboot.cashmanagement.model.Account.builder()
+        accountRepository.save(Account.builder()
                 .name(account.getName())
                 .thresholdAmount(account.getThresholdAmount())
                 .build());
@@ -42,12 +43,12 @@ public class AccountService {
 
         return accountRepository.findAll().stream()
                 .map(account ->
-                    AccountDTO.builder()
-                            .id(account.getId())
-                            .name(account.getName())
-                            .thresholdAmount(account.getThresholdAmount())
-                            .build()
-                    ).collect(Collectors.toList());
+                        AccountDTO.builder()
+                                .id(account.getId())
+                                .name(account.getName())
+                                .thresholdAmount(account.getThresholdAmount())
+                                .build()
+                ).collect(Collectors.toList());
     }
 
     /**
@@ -55,8 +56,14 @@ public class AccountService {
      * @param id AccountID
      * @return Account
      */
-    public com.springboot.cashmanagement.model.Account getAccountById(Long id) {
-        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+    public AccountDTO getAccountById(Long id) {
+        Account account =   accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(account.getId());
+        accountDTO.setName(account.getName());
+        accountDTO.setThresholdAmount(account.getThresholdAmount());
+        accountDTO.setCurrentBalance(account.getBalance());
+        return accountDTO;
     }
 
     /**
@@ -66,12 +73,12 @@ public class AccountService {
      */
     @Transactional
     public void processTransaction(Long accountId, double amount) {
-        com.springboot.cashmanagement.model.Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
         double newBalance = account.getBalance() + amount;
         String transactionType = null;
 // The account needs to be credited to when the new balance is below the threshold
         if (newBalance <= account.getThresholdAmount()) {
-           // Credit
+            // Credit
             account.setBalance(newBalance);
             transactionType = "CREDIT";
         }
@@ -89,7 +96,7 @@ public class AccountService {
         transaction.setAccount(account);
         transactionRepository.save(transaction);
 
-       accountRepository.save(account);
+        accountRepository.save(account);
     }
 
     /**
@@ -98,20 +105,20 @@ public class AccountService {
      * @return transaction history response
      */
     public TransactionHistoryResponseDTO getAccountWithTransactionHistory(Long accountId) {
-        com.springboot.cashmanagement.model.Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
-        List<TransactionHistoryDTO> transactionHistory = account.getTransactions() != null ?
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        List<TransactionHistoryDTO> transactionHistoryDTO = account.getTransactions() != null ?
                 account.getTransactions().stream()
                         .map(this::convertToTransactionDTO)
                         .collect(Collectors.toList()) :
                 new ArrayList<>();
 
-        TransactionHistoryResponseDTO transactionHistoryResponse = new TransactionHistoryResponseDTO();
-        transactionHistoryResponse.setId(account.getId());
-        transactionHistoryResponse.setName(account.getName());
-        transactionHistoryResponse.setCurrentBalance(account.getBalance());
-        transactionHistoryResponse.setThresholdAmount(account.getThresholdAmount());
-        transactionHistoryResponse.setTransactionHistory(transactionHistory);
-        return transactionHistoryResponse;
+        TransactionHistoryResponseDTO transactionHistoryResponseDTO = new TransactionHistoryResponseDTO();
+        transactionHistoryResponseDTO.setId(account.getId());
+        transactionHistoryResponseDTO.setName(account.getName());
+        transactionHistoryResponseDTO.setCurrentBalance(account.getBalance());
+        transactionHistoryResponseDTO.setThresholdAmount(account.getThresholdAmount());
+        transactionHistoryResponseDTO.setTransactionHistoryDTO(transactionHistoryDTO);
+        return transactionHistoryResponseDTO;
     }
 
     /**
@@ -120,12 +127,12 @@ public class AccountService {
      * @return transaction history
      */
     private TransactionHistoryDTO convertToTransactionDTO(Transaction transaction) {
-        TransactionHistoryDTO transactionHistory = new TransactionHistoryDTO();
-        transactionHistory.setTransactionId(transaction.getId());
-        transactionHistory.setType(transaction.getType());
-        transactionHistory.setAmount(transaction.getAmount());
-        transactionHistory.setCreationDate(transaction.getCreationDate());
-        return transactionHistory;
+        TransactionHistoryDTO transactionHistoryDTO = new TransactionHistoryDTO();
+        transactionHistoryDTO.setTransactionId(transaction.getId());
+        transactionHistoryDTO.setType(transaction.getType());
+        transactionHistoryDTO.setAmount(transaction.getAmount());
+        transactionHistoryDTO.setCreationDate(transaction.getCreationDate());
+        return transactionHistoryDTO;
     }
 
     /**
