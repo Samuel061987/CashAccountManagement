@@ -46,6 +46,7 @@ public class AccountService {
                         AccountDTO.builder()
                                 .id(account.getId())
                                 .name(account.getName())
+                                .currentBalance(account.getBalance())
                                 .thresholdAmount(account.getThresholdAmount())
                                 .build()
                 ).collect(Collectors.toList());
@@ -89,6 +90,7 @@ public class AccountService {
             transactionType = "DEBIT";
         }
 
+        accountRepository.save(account);
 
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
@@ -96,7 +98,6 @@ public class AccountService {
         transaction.setAccount(account);
         transactionRepository.save(transaction);
 
-        accountRepository.save(account);
     }
 
     /**
@@ -140,6 +141,7 @@ public class AccountService {
      * @param id use account I'd
      */
     public void deleteAccount(Long id) {
+        transactionRepository.deleteByAccountId(id);
         accountRepository.deleteById(id);
     }
 }
